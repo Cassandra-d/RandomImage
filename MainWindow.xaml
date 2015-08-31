@@ -1,0 +1,82 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    x:Name="WindowArea"
+    x:Class="RandomImage.MainWindow"
+
+    Height="800"
+    Width="600"
+
+    WindowStartupLocation="CenterScreen"
+    Title="Pi Kran Dom"
+
+    Margin="5" MinWidth="740" MinHeight="580"
+    HorizontalContentAlignment="Stretch">
+
+    <Window.Resources>
+        <Style x:Key="Flat">
+            <Setter Property="Control.Background" Value="#FF807D7D" />
+            <Setter Property="Control.BorderBrush" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="Control.IsMouseOver" Value="True">
+                    <Setter Property="Control.Background" Value="#FF807D7D" />
+                    <Setter Property="Control.Foreground" Value="#FF807D7D" />
+                </Trigger>
+                <Trigger Property="Control.IsFocused" Value="True">
+                    <Setter Property="Control.FontWeight" Value="Bold" />
+                </Trigger>
+                <Trigger Property="Control.IsEnabled" Value="False">
+                    <Setter Property="Control.Background" Value="#FFE6E5E5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="grid" Background="#FF222222">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="241*" />
+            <RowDefinition Height="244*" />
+            <RowDefinition Height="123*" />
+            <RowDefinition Height="26*" />
+            <RowDefinition Height="29" />
+            <RowDefinition Height="32" />
+            <RowDefinition Height="24" />
+        </Grid.RowDefinitions>
+
+        <Image  x:Name="Preview_img" Margin="5" Grid.Row ="0" Grid.RowSpan="2"></Image>
+
+        <ScrollViewer x:Name="TextScroll_scvw"  Grid.Row="2">
+            <TextBox x:Name="Information_tb" Grid.Row="2" Foreground="#FF807D7D" Background="Transparent" IsReadOnly="True" Cursor="Arrow"/>
+        </ScrollViewer>
+
+        <DockPanel Name="SettingsPanel" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" LastChildFill="False">
+            <CheckBox x:Name="CheckForAlreadyUsed_chbox" Content="Check for already in use" Margin="0,0,5,0" Foreground="#FF807D7D" Click="CheckForAlreadyUsed_chbox_Click" />
+            <CheckBox x:Name="AutomaticalyCopyToClipboard_chbox" Content="Automaticaly copy to clipboard"  Margin="0,0,5,0" Foreground="#FF807D7D" Click="AutomaticalyCopyToClipboard_chbox_Click" />
+            <CheckBox x:Name="SearchInSubdirs_chbox" Content="Check in subdirectories" Margin="0,0,5,0" Foreground="#FF807D7D" Click="SearchInSubdirs_chbox_Click" />
+        </DockPanel>
+
+        <DockPanel  Name="ButtonsPanel" Grid.Row="4" HorizontalAlignment="Center" LastChildFill="False">
+            <Button x:Name="Prev_btn" Style="{StaticResource Flat}" Content="Prev" Margin="2,0,2,0" Click="Prev_btn_Click" />
+            <Button x:Name="Next_btn" Style="{StaticResource Flat}" Content="Next"  Margin="2,0,2,0" Click="Next_btn_Click" />
+            <Button x:Name="Add_btn" Style="{StaticResource Flat}" Content="Add! (to clipboard)" Margin="2,0,2,0" Click="Add_btn_Click" />
+            <Button x:Name="Search_btn" Style="{StaticResource Flat}" Content="Search in..." Margin="2,0,2,0" Click="SearchButton_Click" />
+            <ComboBox x:Name="Search_cbox" Margin="-2,0,2,0" SelectionChanged="Search_cbox_SelectionChanged" />
+            <Button x:Name="ClearUsedHistory_btn" Style="{StaticResource Flat}" Content="Clear using history" Margin="2,0,2,0" Click="ClearUsedHistory_Click" />
+        </DockPanel>
+
+        <DockPanel Grid.Row="5" Margin="0,2,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" LastChildFill="False">
+            <Button x:Name="Stop_btn" VerticalAlignment="Bottom" Content="Stop it!" Click="Stop_btn_Click"/>
+            <TextBox x:Name="Progress_pbar"  VerticalAlignment="Bottom" Background="GhostWhite" Text="We're doing something..." />
+            <Label x:Name="ImageModificationDate_lbl" Foreground="#FF807D7D" />
+            <Label x:Name="ImageSize_lbl" Foreground="#FF807D7D" />
+            <Label x:Name="IsImageAlreadyUsed_lbl" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Height="24" Content="already used" FontSize="11" Padding="2,0,2,0" FontWeight="Bold" Background="#FF876464" />
+        </DockPanel>
+
+        <DockPanel Grid.Row="6" VerticalAlignment="Center" LastChildFill="False">
+            <Label x:Name="FoundImagesCount_lbl" Content="0"  DockPanel.Dock="Left" Foreground="#FF807D7D" />
+            <Label x:Name="SelectedPath_lbl" DockPanel.Dock="Left" Foreground="#FF807D7D" />
+        </DockPanel>
+    </Grid>
+</Window>
