@@ -12,7 +12,6 @@ namespace RandomImage
         private string _appData = "";
         private readonly string _programDirectoryName = "PicRanDom";
         private readonly string _settingsFileName = "settings.xml";
-        private readonly string _usedImagesHistoryFileName = "used.xml";
 
         public Settings Settings { get; set; }
 
@@ -50,16 +49,6 @@ namespace RandomImage
             {
                 CrashLogger.Instance.Log("Saving settings", ex.Message);
             }
-
-            try
-            {
-                CreateUsedImagesHistorySettingsFileIfDoesntExist();
-                SerializeUsedImagesHistory(Settings.UsedImages);
-            }
-            catch (Exception ex)
-            {
-                CrashLogger.Instance.Log("Saving used images' history", ex.Message);
-            }
         }
 
         public void LoadSettings()
@@ -77,7 +66,6 @@ namespace RandomImage
             try
             {
                 DeserializeSettings();
-                DeserializeUsedImages();
             }
             catch (Exception ex)
             {
@@ -91,7 +79,6 @@ namespace RandomImage
         {
             File.Delete(SettingsFileFullPath);
             CreateSettingsFileIfDoesntExist();
-            CreateUsedImagesHistorySettingsFileIfDoesntExist();
         }
 
         private string ProgramDirectory
@@ -107,14 +94,6 @@ namespace RandomImage
             get
             {
                 return ProgramDirectory + "\\" + _settingsFileName; ;
-            }
-        }
-
-        private string UsedImagesHistoryFullPath
-        {
-            get
-            {
-                return ProgramDirectory + "\\" + _usedImagesHistoryFileName;
             }
         }
 
@@ -156,32 +135,6 @@ namespace RandomImage
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(Settings));
                 serializer.Serialize(sw, Settings);
-            }
-        }
-
-        private void CreateUsedImagesHistorySettingsFileIfDoesntExist()
-        {
-            if (!File.Exists(UsedImagesHistoryFullPath))
-            {
-                File.Create(UsedImagesHistoryFullPath).Close();
-            }
-        }
-
-        private void SerializeUsedImagesHistory(HashSet<string> hashes)
-        {
-            using (StreamWriter sw = new StreamWriter(UsedImagesHistoryFullPath))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(HashSet<string>));
-                serializer.Serialize(sw, hashes);
-            }
-        }
-
-        private void DeserializeUsedImages()
-        {
-            using (FileStream fs = new FileStream(UsedImagesHistoryFullPath, FileMode.Open))
-            {
-                XmlSerializer deserializer = new XmlSerializer(typeof(HashSet<string>));
-                Settings.UsedImages = (HashSet<String>)deserializer.Deserialize(fs);
             }
         }
 
