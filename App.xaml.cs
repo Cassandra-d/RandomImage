@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace RandomImage
 {
@@ -17,19 +18,11 @@ namespace RandomImage
 
         public App()
         {
-            try
-            { 
-                SettingsManager.LoadSettings();
-                Randomizer.SearchDirectoryPath = SettingsManager.Settings.CurrentPlace;
-            }
-            catch(Exception ex)
-            {
-                CrashLogger.Instance.Log("App()", ex.Message);
-                MessageBox.Show("Critical error, I dunno what to do, HALT!");
-                Environment.Exit(1);
-            }
-        }
+            DispatcherUnhandledException += ApplicationScopeExceptionHandler;
 
+            SettingsManager.LoadSettings();
+            Randomizer.SearchDirectoryPath = SettingsManager.Settings.CurrentPlace;
+        }
         ~App()
         {
             SettingsManager.SaveSettings();
@@ -39,6 +32,13 @@ namespace RandomImage
         private static void SaveSettingsCallback(object stateInfo)
         {
             SettingsManager.SaveSettings();
+        }
+
+        private void ApplicationScopeExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            CrashLogger.Instance.Log("App()", e.Exception.Message);
+            MessageBox.Show("Critical error, I dunno what to do, HALT!");
+            Environment.Exit(1);
         }
     }
 }
