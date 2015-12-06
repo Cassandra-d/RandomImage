@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security;
 using System.Threading;
 
 namespace RandomImage
@@ -149,9 +150,11 @@ namespace RandomImage
                     images.AddRange(System.IO.Directory.EnumerateFiles(directory, fileMask, SearchOption.TopDirectoryOnly));
                 }
             }
+            catch (SecurityException) { }
+            catch (UnauthorizedAccessException) { }
             catch (Exception ex)
             {
-                CrashLogger.Instance.Log("Search failed in directory " + directory, ex.Message);
+                CrashLogger.Instance.Log("Files enumeration failed in directory " + directory, ex.Message);
             }
 
             foundFiles.AddRange(directory, images);
@@ -163,9 +166,11 @@ namespace RandomImage
             {
                 subDirs = System.IO.Directory.EnumerateDirectories(directory, "*", SearchOption.TopDirectoryOnly);
             }
+            catch (SecurityException) { }
+            catch (UnauthorizedAccessException) { }
             catch (Exception ex)
             {
-                CrashLogger.Instance.Log("Search failed in directory " + directory, ex.Message);
+                CrashLogger.Instance.Log("Directory enumeration failed in directory " + directory, ex.Message);
             }
 
             foreach (var subDir in subDirs)
