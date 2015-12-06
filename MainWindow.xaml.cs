@@ -13,7 +13,15 @@ namespace RandomImage
     {
         private class StringMessages
         {
-            public const string DID_NOT_FOUND_IMAGE = "I didn't find anything yet. :3";
+            public const string NEED_SEARCH = "I didn't find anything yet. :3";
+            public const string DID_NOT_FOUND_IMAGE = "Sorry, but I found 0 images, try another directory. :3";
+            public const string PATH_NOT_SELECTED = "Looks like you have not selected a path! :3";
+            public const string LOG_HISTORY_DELETED = "History deleted.";
+            public const string LOG_CLEARING_USING_HISTORY = "Clearing using history";
+            public const string LOG_DID_NOT_CLEAR_HISTORY = "Whoooops! I didn't clear history.";
+            public const string LOG_DISPLAYING_IMAGE = "Displaying image";
+            public const string MODIFICATION_DATE = "Modification Date: {0}";
+            public const string UNABLE_TO_GET_MODIFICATION_DATE = "Unable to get Modification Date";
         }
 
         private const int MaximumLastPlacesCount = 10;
@@ -87,7 +95,7 @@ namespace RandomImage
 
         private void SuggestToSelectAPath()
         {
-            System.Windows.MessageBox.Show("Looks like you have not selected a path! :3");
+            System.Windows.MessageBox.Show(StringMessages.PATH_NOT_SELECTED);
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -121,7 +129,7 @@ namespace RandomImage
             if (!String.IsNullOrEmpty(path))
                 DisplayImage(path);
             else
-                System.Windows.MessageBox.Show("Sorry, but I found 0 images, try another directory. :3");
+                System.Windows.MessageBox.Show(StringMessages.DID_NOT_FOUND_IMAGE);
         }
 
         private void Prev_btn_Click(object sender, RoutedEventArgs e)
@@ -142,7 +150,7 @@ namespace RandomImage
             if (!String.IsNullOrEmpty(path))
                 DisplayImage(path);
             else
-                System.Windows.MessageBox.Show("Sorry, but I found 0 images, try another directory. :3");
+                System.Windows.MessageBox.Show(StringMessages.DID_NOT_FOUND_IMAGE);
         }
 
         private void Add_btn_Click(object sender, RoutedEventArgs e)
@@ -164,13 +172,13 @@ namespace RandomImage
             try
             {
                 App.SettingsManager.Settings.ClearUsedImages();
-                PostToLogBox("History deleted.");
+                PostToLogBox(StringMessages.LOG_HISTORY_DELETED);
                 DisplayUsedImageLabel(App.Randomizer.CurrentImage);
             }
             catch (Exception ex)
             {
-                CrashLogger.Instance.Log("Clearing using history", ex.Message);
-                PostToLogBox("Whoooops! I didn't clear history.");
+                CrashLogger.Instance.Log(StringMessages.LOG_CLEARING_USING_HISTORY, ex.Message);
+                PostToLogBox(StringMessages.LOG_DID_NOT_CLEAR_HISTORY);
             }
         }
 
@@ -242,7 +250,7 @@ namespace RandomImage
             catch (Exception e)
             {
                 PostToLogBox(e.Message + " : " + imagePath);
-                CrashLogger.Instance.Log("Displaying image", e.Message);
+                CrashLogger.Instance.Log(StringMessages.LOG_DISPLAYING_IMAGE, e.Message);
             }
         }
 
@@ -272,9 +280,9 @@ namespace RandomImage
         {
             string date = Aux.GetModificationDate(filePath).ToShortDateString();
             if (!String.IsNullOrEmpty(date))
-                ImageModificationDate_lbl.Content = string.Format("Modification Date: {0}", date);
+                ImageModificationDate_lbl.Content = string.Format(StringMessages.MODIFICATION_DATE, date);
             else
-                ImageModificationDate_lbl.Content = "Unable to get Modification Date";
+                ImageModificationDate_lbl.Content = StringMessages.UNABLE_TO_GET_MODIFICATION_DATE;
             ImageModificationDate_lbl.Visibility = Visibility.Visible;
         }
 
@@ -334,7 +342,7 @@ namespace RandomImage
 
         private void DisplayUsedImageLabel(string imagePath)
         {
-            if (App.SettingsManager.Settings.CheckForAlreadyUsedImages && !string.IsNullOrEmpty("imagePath"))
+            if (App.SettingsManager.Settings.CheckForAlreadyUsedImages && !string.IsNullOrEmpty(imagePath))
                 IsImageAlreadyUsed_lbl.Visibility = App.SettingsManager.Settings.UsedImages.Contains(Aux.GetHashCode(imagePath)) ?
                     Visibility.Visible : Visibility.Hidden;
         }
