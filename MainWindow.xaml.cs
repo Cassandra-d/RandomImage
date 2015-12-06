@@ -22,6 +22,8 @@ namespace RandomImage
             public const string LOG_DISPLAYING_IMAGE = "Displaying image";
             public const string MODIFICATION_DATE = "Modification Date: {0}";
             public const string UNABLE_TO_GET_MODIFICATION_DATE = "Unable to get Modification Date";
+            public const string LOG_PATH_DOES_NOT_EXIST = "Directory does not exist";
+            public const string SELECTED_DIRECTORY_DOES_NOT_EXIST = "Selected directory doesn't exist anymore, choose another one. :3";
         }
 
         private const int MaximumLastPlacesCount = 10;
@@ -49,7 +51,14 @@ namespace RandomImage
             ApplySettings();
 
             if (IsSearchPathSet)
+            {
+                if (!IsSelectedDirectoryExist)
+                {
+                    System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
+                    return;
+                }
                 App.Randomizer.UpdateCollection();
+            }
         }
 
         private void AdjustWindowSize()
@@ -93,6 +102,14 @@ namespace RandomImage
             }
         }
 
+        private bool IsSelectedDirectoryExist
+        {
+            get
+            {
+                return System.IO.Directory.Exists(App.Randomizer.SearchDirectoryPath);
+            }
+        }
+
         private void SuggestToSelectAPath()
         {
             System.Windows.MessageBox.Show(StringMessages.PATH_NOT_SELECTED);
@@ -121,6 +138,11 @@ namespace RandomImage
 
             if (!App.Randomizer.IsUpdated)
             {
+                if (!IsSelectedDirectoryExist)
+                {
+                    System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
+                    return;
+                }
                 App.Randomizer.UpdateCollection();
                 return;
             }
@@ -142,6 +164,11 @@ namespace RandomImage
 
             if (!App.Randomizer.IsUpdated)
             {
+                if (!IsSelectedDirectoryExist)
+                {
+                    System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
+                    return;
+                }
                 App.Randomizer.UpdateCollection();
                 return;
             }
@@ -157,7 +184,7 @@ namespace RandomImage
         {
             var str = App.Randomizer.Count == 0 ?
                 StringMessages.DID_NOT_FOUND_IMAGE : App.Randomizer.CurrentImage;
-            
+
             PostToLogBox(str);
             PostToClipboard(str);
 
@@ -205,6 +232,12 @@ namespace RandomImage
                 return;
             ChangeCurrentPath(e.AddedItems[0].ToString());
             HideImageAndInfo();
+
+            if (!IsSelectedDirectoryExist)
+            {
+                System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
+                return;
+            }
             App.Randomizer.UpdateCollection();
         }
 
@@ -214,6 +247,12 @@ namespace RandomImage
             App.Randomizer.IncludeSubdirs = val;
             App.SettingsManager.Settings.SearchInSubdirectories = val;
             HideImageAndInfo();
+
+            if (!IsSelectedDirectoryExist)
+            {
+                System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
+                return;
+            }
             App.Randomizer.UpdateCollection();
         }
 
@@ -466,7 +505,7 @@ namespace RandomImage
 
             if (!IsSearchPathSet || App.Randomizer.Count == 0)
                 return;
-            
+
             var file = App.Randomizer.CurrentImage;
             DisplayImage(file);
             DisplayImageFileInfo(file);

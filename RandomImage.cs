@@ -8,6 +8,28 @@ namespace RandomImage
 {
     public class RandomImageFinder
     {
+        public class DirectoryDoesNotExistAnymore: Exception
+        {
+            private const string key = "dir";
+            public DirectoryDoesNotExistAnymore(string directory)
+            {
+                this.Data[key] = directory;
+            }
+
+            public string Directory()
+            {
+                return (this.Data[key] ?? string.Empty).ToString();
+            }
+
+            public override string Message
+            {
+                get
+                {
+                    return string.Concat("Directory ", Directory(), " does not exist");
+                }
+            }
+        }
+
         private string _searchDirectoryPath;
         private bool _haventSearchedImagesYet;
         private ImagesCollection _imagesCollection;
@@ -74,8 +96,7 @@ namespace RandomImage
         {
             if (!System.IO.Directory.Exists(_searchDirectoryPath))
             {
-                System.Windows.MessageBox.Show("Selected directory doesn't exist anymore, choose another one. :3");
-                return;
+                throw new DirectoryDoesNotExistAnymore(_searchDirectoryPath);
             }
 
             _imagesCollection.Clear();
