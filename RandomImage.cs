@@ -10,15 +10,15 @@ namespace RandomImage
     {
         public class DirectoryDoesNotExistAnymore: Exception
         {
-            private const string key = "dir";
+            private const string Key = "dir";
             public DirectoryDoesNotExistAnymore(string directory)
             {
-                this.Data[key] = directory;
+                Data[Key] = directory;
             }
 
             public string Directory()
             {
-                return (this.Data[key] ?? string.Empty).ToString();
+                return (Data[Key] ?? string.Empty).ToString();
             }
 
             public override string Message
@@ -67,7 +67,7 @@ namespace RandomImage
             if (_haventSearchedImagesYet)
                 SearchImages();
 
-            return _imagesCollection.IsEmpty ? String.Empty : _imagesCollection.Next();
+            return _imagesCollection.IsEmpty ? string.Empty : _imagesCollection.Next();
         }
 
         public string PrevImage()
@@ -75,7 +75,7 @@ namespace RandomImage
             if (_haventSearchedImagesYet)
                 SearchImages();
 
-            return _imagesCollection.IsEmpty ? String.Empty : _imagesCollection.Prev();
+            return _imagesCollection.IsEmpty ? string.Empty : _imagesCollection.Prev();
         }
 
         public void UpdateCollection()
@@ -107,7 +107,7 @@ namespace RandomImage
                 IncludeSubdirs = _includeSubdirs
             };
 
-            object callbackParams = new object[4]
+            object callbackParams = new object[]
             {
                 _searchDirectoryPath, _imagesCollection, _imageFileMasks, searchOptions
             };
@@ -120,15 +120,13 @@ namespace RandomImage
 
         private void AbortThreadInternal()
         {
-            if (_searchThread != null)
-            {
-                if (_searchThread.IsAlive)
-                {
-                    _searchThread.Abort();
-                    _threadAborted = true;
-                }
-                _searchThread = null;
-            }
+	        if (_searchThread == null) return;
+	        if (_searchThread.IsAlive)
+	        {
+		        _searchThread.Abort();
+		        _threadAborted = true;
+	        }
+	        _searchThread = null;
         }
 
         private void CompleteSearch()
@@ -143,7 +141,7 @@ namespace RandomImage
         {
             try
             {
-                var pms = (parameters as object[]);
+                var pms = parameters as object[];
                 if (pms.GetUpperBound(0) != 3)
                     throw new ArgumentException("parameters have not all the parameters");
 
@@ -221,9 +219,6 @@ namespace RandomImage
             get { return _includeSubdirs; }
             set
             {
-                if (_includeSubdirs == value)
-                    return;
-
                 _includeSubdirs = value;
             }
         }

@@ -16,9 +16,7 @@ namespace RandomImage
         {
             get
             {
-                if (LastPlaces.Count != 0)
-                    return LastPlaces.First();
-                return String.Empty;
+	            return LastPlaces.Count != 0 ? LastPlaces.First() : string.Empty;
             }
         }
 

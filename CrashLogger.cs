@@ -5,15 +5,15 @@ namespace RandomImage
 {
     internal class CrashLogger : IDisposable
     {
-        private string _logFileName = "pi_c_random_crash_log.txt";
-        private string _logFileDirectory;
+	    private const string _logFileName = "pi_c_random_crash_log.txt";
+	    private string _logFileDirectory;
         private StreamWriter _sw;
         private bool _isInitialized = false;
-        private readonly string boundry = "-----------------------";
+	    private const string boundry = "-----------------------";
 
-        static private Lazy<CrashLogger> _instance = new Lazy<CrashLogger>(() => new CrashLogger());
+	    static private Lazy<CrashLogger> _instance = new Lazy<CrashLogger>(() => new CrashLogger());
 
-        static public CrashLogger Instance
+        public static CrashLogger Instance
         {
             get
             {
@@ -46,14 +46,13 @@ namespace RandomImage
                 }
 
                 _sw = new StreamWriter(LogsFullPath, true);
-                _sw.WriteLine(String.Concat("Today is ", DateTime.Now.ToShortDateString().ToString(), ", glad to see you again."));
+                _sw.WriteLine(string.Concat("Today is ", DateTime.Now.ToShortDateString().ToString(), ", glad to see you again."));
                 _sw.Flush();
                 _isInitialized = true;
             }
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("Sorry, but I can't create crash log file because of" + Environment.NewLine + ex.Message);
-                return;
             }
         }
 

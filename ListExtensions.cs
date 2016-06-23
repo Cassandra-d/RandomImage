@@ -6,12 +6,12 @@ namespace RandomImage
 {
     public static class ListExtensions
     {
-        public static List<T> Shuffle<T>(this List<T> list)
+        public static void Shuffle<T>(this List<T> list)
         {
             PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available Bytes");
             double seed = Math.Abs(DateTime.Now.Millisecond - Math.Round(ramCounter.NextValue()));
-            if (seed >= Int32.MaxValue)
-                seed -= Math.Round(seed / Int32.MaxValue) * Int32.MaxValue;
+            if (seed >= int.MaxValue)
+                seed -= Math.Round(seed / int.MaxValue) * int.MaxValue;
 
             Random rng = new Random(Convert.ToInt32(seed));
             int n = list.Count;
@@ -23,7 +23,6 @@ namespace RandomImage
                 list[k] = list[n];
                 list[n] = value;
             }
-            return list;
         }
     }
 }

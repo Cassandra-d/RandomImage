@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Xml.Serialization;
@@ -10,22 +9,22 @@ namespace RandomImage
     {
         private bool _validAppData = false;
         private string _appData = "";
-        private readonly string _programDirectoryName = "PicRanDom";
-        private readonly string _settingsFileName = "settings.xml";
+	    private const string _programDirectoryName = "PicRanDom";
+	    private const string _settingsFileName = "settings.xml";
 
-        public Settings Settings { get; set; }
+	    public Settings Settings { get; set; }
 
         public SettingsManager()
         {
             _validAppData = true;
             _appData = Environment.GetEnvironmentVariable("AppData");
-            if (String.IsNullOrEmpty(_appData))
+            if (string.IsNullOrEmpty(_appData))
             {
                 MessageBox.Show("Sorry, but I can't load or save settings file.");
                 _validAppData = false;
             }
 
-            Settings = new RandomImage.Settings();
+            Settings = new Settings();
         }
 
         public void SaveSettings()
@@ -71,7 +70,6 @@ namespace RandomImage
             {
                 CrashLogger.Instance.Log("Loading settings", ex.Message);
                 HandleDeseralizationException(SettingsFileFullPath, ex);
-                return;
             }
         }
 
@@ -93,7 +91,7 @@ namespace RandomImage
         {
             get
             {
-                return ProgramDirectory + "\\" + _settingsFileName; ;
+                return ProgramDirectory + "\\" + _settingsFileName;
             }
         }
 
@@ -147,7 +145,7 @@ namespace RandomImage
             }
         }
 
-        private void HandleDeseralizationException(String settingsPath, Exception ex)
+        private void HandleDeseralizationException(string settingsPath, Exception ex)
         {
             if (ex is InvalidOperationException)
             {

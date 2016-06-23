@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace RandomImage
 {
@@ -159,11 +158,9 @@ namespace RandomImage
 
             foreach (Directory directory in _directoriesList)
             {
-                if (directory.Files.Count < _countOfFilesInDirectoryToUnite)
-                {
-                    unitedResultDirectory.Files.AddRange(directory.Files.FilesList);
-                    directoriesToRemove.Add(directory);
-                }
+	            if (directory.Files.Count >= _countOfFilesInDirectoryToUnite) continue;
+	            unitedResultDirectory.Files.AddRange(directory.Files.FilesList);
+	            directoriesToRemove.Add(directory);
             }
             foreach (Directory directory in directoriesToRemove)
                 _directoriesList.Remove(directory);
@@ -189,6 +186,7 @@ namespace RandomImage
                 directory = new Directory();
                 directory.Name = directoryName;
                 _directoriesList.Add(directory);
+				// why we don't use indx anywhere?
                 indx = _directoriesList.Count - 1;
             }
             else

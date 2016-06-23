@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
@@ -50,15 +49,13 @@ namespace RandomImage
             AdjustWindowSize();
             ApplySettings();
 
-            if (IsSearchPathSet)
-            {
-                if (!IsSelectedDirectoryExist)
-                {
-                    System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
-                    return;
-                }
-                App.Randomizer.UpdateCollection();
-            }
+	        if (!IsSearchPathSet) return;
+	        if (!IsSelectedDirectoryExist)
+	        {
+		        System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
+		        return;
+	        }
+	        App.Randomizer.UpdateCollection();
         }
 
         private void AdjustWindowSize()
@@ -148,7 +145,7 @@ namespace RandomImage
             }
 
             string path = App.Randomizer.NextImage();
-            if (!String.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path))
                 DisplayImage(path);
             else
                 System.Windows.MessageBox.Show(StringMessages.DID_NOT_FOUND_IMAGE);
@@ -174,7 +171,7 @@ namespace RandomImage
             }
 
             string path = App.Randomizer.PrevImage();
-            if (!String.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path))
                 DisplayImage(path);
             else
                 System.Windows.MessageBox.Show(StringMessages.DID_NOT_FOUND_IMAGE);
@@ -318,10 +315,10 @@ namespace RandomImage
         private void DisplayModificationDate(string filePath)
         {
             string date = Aux.GetModificationDate(filePath).ToShortDateString();
-            if (!String.IsNullOrEmpty(date))
-                ImageModificationDate_lbl.Content = string.Format(StringMessages.MODIFICATION_DATE, date);
-            else
-                ImageModificationDate_lbl.Content = StringMessages.UNABLE_TO_GET_MODIFICATION_DATE;
+            ImageModificationDate_lbl.Content = 
+				!string.IsNullOrEmpty(date) 
+					? string.Format(StringMessages.MODIFICATION_DATE, date) 
+					: StringMessages.UNABLE_TO_GET_MODIFICATION_DATE;
             ImageModificationDate_lbl.Visibility = Visibility.Visible;
         }
 

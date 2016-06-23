@@ -6,7 +6,7 @@ namespace RandomImage
 {
     public static class Aux
     {
-        static public DateTime GetModificationDate(string filePath)
+        public static DateTime GetModificationDate(string filePath)
         {
             try
             {
@@ -26,9 +26,9 @@ namespace RandomImage
             }
         }
 
-        static public string GetHashCode(string imagePath)
+        public static string GetHashCode(string imagePath)
         {
-            var retVal = String.Empty;
+            var retVal = string.Empty;
             using (var md5 = MD5.Create())
             {
                 using (var stream = File.OpenRead(imagePath))
@@ -39,11 +39,9 @@ namespace RandomImage
             return retVal;
         }
 
-        static public long GetSize(string imagePath)
+        public static long GetSize(string imagePath)
         {
-            if (!File.Exists(imagePath))
-                return 0;
-            return (new FileInfo(imagePath)).Length;
+	        return !File.Exists(imagePath) ? 0 : (new FileInfo(imagePath)).Length;
         }
     }
 }
