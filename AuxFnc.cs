@@ -10,10 +10,7 @@ namespace RandomImage
         {
             try
             {
-                var retVal = new DateTime();
-                if (File.Exists(filePath))
-                    retVal = File.GetLastWriteTime(filePath);
-                return retVal;
+                return File.GetLastWriteTime(filePath);
             }
             catch (Exception ex)
             {
@@ -21,7 +18,10 @@ namespace RandomImage
                     ex is ArgumentException ||
                     ex is PathTooLongException ||
                     ex is NotSupportedException)
+                {
                     return new DateTime();
+                }
+
                 throw new InvalidProgramException("Getting modification date", ex);
             }
         }

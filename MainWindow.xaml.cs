@@ -314,7 +314,17 @@ namespace RandomImage
 
         private void DisplayModificationDate(string filePath)
         {
-            string date = Aux.GetModificationDate(filePath).ToShortDateString();
+            string date = string.Empty;
+
+            try
+            {
+                date = Aux.GetModificationDate(filePath).ToShortDateString();
+            }
+            catch(Exception ex)
+            {
+                CrashLogger.Instance.Log("GetModificationDate", ex.Message);
+            }
+
             ImageModificationDate_lbl.Content =
                 !string.IsNullOrEmpty(date)
                     ? string.Format(StringMessages.MODIFICATION_DATE, date)
