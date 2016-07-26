@@ -9,75 +9,8 @@ namespace RandomImage
     {
         private bool _validAppData = false;
         private string _appData = "";
-	    private const string _programDirectoryName = "PicRanDom";
-	    private const string _settingsFileName = "settings.xml";
-
-	    public Settings Settings { get; set; }
-
-        public SettingsManager()
-        {
-            _validAppData = true;
-            _appData = Environment.GetEnvironmentVariable("AppData");
-            if (string.IsNullOrEmpty(_appData))
-            {
-                MessageBox.Show("Sorry, but I can't load or save settings file.");
-                _validAppData = false;
-            }
-
-            Settings = new Settings();
-        }
-
-        public void SaveSettings()
-        {
-            if (!IsAppDataFound || IsSettingsDirectoryExist() == false)
-            {
-                CrashLogger.Instance.Log("Saving settings", 
-                    string.Format("AppDataFound: {0}, SettingsDirectoryExist: {1}", IsAppDataFound, IsSettingsDirectoryExist()));
-                return;
-            }
-
-            // we will serialize settings and used images separetely
-            // I think that it's better to save at least something
-            // so, don't unite it under one try block
-            try
-            {
-                CreateSettingsFileIfDoesntExist();
-                SerializeSettings();
-            }
-            catch (Exception ex)
-            {
-                CrashLogger.Instance.Log("Saving settings", ex.Message);
-            }
-        }
-
-        public void LoadSettings()
-        {
-            if (!IsAppDataFound || IsSettingsDirectoryExist() == false || !File.Exists(SettingsFileFullPath))
-            {
-                SettingsCleanUp();
-                SaveSettings();
-                CrashLogger.Instance.Log("Saving settings",
-                    string.Format("AppDataFound: {0}, SettingsDirectoryExist: {1}, IsSettingsFileExist: {2}",
-                    IsAppDataFound, IsSettingsDirectoryExist(), File.Exists(SettingsFileFullPath)));
-                return;
-            }
-
-            try
-            {
-                DeserializeSettings();
-            }
-            catch (Exception ex)
-            {
-                CrashLogger.Instance.Log("Loading settings", ex.Message);
-                HandleDeseralizationException(SettingsFileFullPath, ex);
-            }
-        }
-
-        private void SettingsCleanUp()
-        {
-            File.Delete(SettingsFileFullPath);
-            CreateSettingsFileIfDoesntExist();
-        }
+        private const string _programDirectoryName = "PicRanDom";
+        private const string _settingsFileName = "settings.xml";
 
         private string ProgramDirectory
         {
@@ -103,28 +36,86 @@ namespace RandomImage
             }
         }
 
-        private bool IsSettingsDirectoryExist()
+        public Settings Settings { get; set; }
+
+        public SettingsManager()
         {
-            bool retVal = true;
+            _validAppData = true;
+            _appData = Environment.GetEnvironmentVariable("AppData");
+
+            if (_appData.IsNullOrEmpty())
+            {
+                MessageBox.Show("Sorry, but I can't load or save settings file.");
+                // but we still can continue work
+                _validAppData = false;
+            }
+
+            Settings = new Settings();
+        }
+
+        public void SaveSettings()
+        {
+            if (!IsAppDataFound)
+            {
+                CrashLogger.Instance.Log("Saving settings", string.Format("AppDataFound: false"));
+                return;
+            }
+
             try
             {
-                if (!System.IO.Directory.Exists(ProgramDirectory))
-                    System.IO.Directory.CreateDirectory(ProgramDirectory);
+                CreateSettingsDirectoryAndFileIfDoesntExist();
+                SerializeSettings();
+
             }
             catch (Exception ex)
             {
-                retVal = false;
-                CrashLogger.Instance.Log("Checking settings directory", ex.Message);
+                CrashLogger.Instance.Log("SaveSettings", ex.Message);
+                return;
             }
-            return retVal;
         }
 
-        private void CreateSettingsFileIfDoesntExist()
+        public void LoadSettings()
         {
-            if (!File.Exists(SettingsFileFullPath))
+            if (!IsAppDataFound || !File.Exists(SettingsFileFullPath))
             {
-                File.Create(SettingsFileFullPath).Close();
+                try
+                {
+                    SettingsCleanUp();
+                }
+                catch (Exception ex)
+                {
+                    CrashLogger.Instance.Log("SettingsCleanUp", ex.Message);
+                    return;
+                }
+
+                SaveSettings();
+                return;
             }
+
+            try
+            {
+                DeserializeSettings();
+            }
+            catch (Exception ex)
+            {
+                CrashLogger.Instance.Log("DeserializeSettings", ex.Message);
+                HandleDeseralizationException(SettingsFileFullPath, ex);
+            }
+        }
+
+        private void SettingsCleanUp()
+        {
+            File.Delete(SettingsFileFullPath);
+            CreateSettingsDirectoryAndFileIfDoesntExist();
+        }
+
+        private void CreateSettingsDirectoryAndFileIfDoesntExist()
+        {
+            if (!System.IO.Directory.Exists(ProgramDirectory))
+                System.IO.Directory.CreateDirectory(ProgramDirectory);
+
+            if (!File.Exists(SettingsFileFullPath))
+                File.Create(SettingsFileFullPath).Close();
         }
 
         private void SerializeSettings()
@@ -157,7 +148,7 @@ namespace RandomImage
                 }
                 catch { }
             }
-            CrashLogger.Instance.Log("Settings deserealization", ex.Message);
+            CrashLogger.Instance.Log("HandleDeseralizationException", ex.Message);
         }
     }
 }

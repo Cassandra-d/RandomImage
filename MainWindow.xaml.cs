@@ -49,13 +49,13 @@ namespace RandomImage
             AdjustWindowSize();
             ApplySettings();
 
-	        if (!IsSearchPathSet) return;
-	        if (!IsSelectedDirectoryExist)
-	        {
-		        System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
-		        return;
-	        }
-	        App.Randomizer.UpdateCollection();
+            if (!IsSearchPathSet) return;
+            if (!IsSelectedDirectoryExist)
+            {
+                System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
+                return;
+            }
+            App.Randomizer.UpdateCollection();
         }
 
         private void AdjustWindowSize()
@@ -315,10 +315,10 @@ namespace RandomImage
         private void DisplayModificationDate(string filePath)
         {
             string date = Aux.GetModificationDate(filePath).ToShortDateString();
-            ImageModificationDate_lbl.Content = 
-				!string.IsNullOrEmpty(date) 
-					? string.Format(StringMessages.MODIFICATION_DATE, date) 
-					: StringMessages.UNABLE_TO_GET_MODIFICATION_DATE;
+            ImageModificationDate_lbl.Content =
+                !string.IsNullOrEmpty(date)
+                    ? string.Format(StringMessages.MODIFICATION_DATE, date)
+                    : StringMessages.UNABLE_TO_GET_MODIFICATION_DATE;
             ImageModificationDate_lbl.Visibility = Visibility.Visible;
         }
 

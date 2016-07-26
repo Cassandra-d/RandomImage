@@ -22,7 +22,7 @@ namespace RandomImage
                     ex is PathTooLongException ||
                     ex is NotSupportedException)
                     return new DateTime();
-                throw new InvalidProgramException("Getting modification date",ex);
+                throw new InvalidProgramException("Getting modification date", ex);
             }
         }
 
@@ -41,7 +41,7 @@ namespace RandomImage
 
         public static long GetSize(string imagePath)
         {
-	        return !File.Exists(imagePath) ? 0 : (new FileInfo(imagePath)).Length;
+            return !File.Exists(imagePath) ? 0 : (new FileInfo(imagePath)).Length;
         }
     }
 }
