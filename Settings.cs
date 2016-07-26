@@ -16,7 +16,7 @@ namespace RandomImage
         {
             get
             {
-	            return LastPlaces.Count != 0 ? LastPlaces.First() : string.Empty;
+                return LastPlaces.FirstOrDefault();
             }
         }
 
@@ -27,13 +27,15 @@ namespace RandomImage
         {
             LastPlaces = new List<string>();
             UsedImages = new HashSet<string>();
+
+            AutomaticalyCopyImageToClipboard = false;
             SearchInSubdirectories = false;
             CheckForAlreadyUsedImages = false;
         }
 
-        public void AddPlace(string place)
+        public void AddVisitedPlace(string place)
         {
-            if (string.IsNullOrEmpty(place))
+            if (place.IsNullOrEmpty())
                 throw new ArgumentException("place should not be empty");
 
             LastPlaces.Remove(place);

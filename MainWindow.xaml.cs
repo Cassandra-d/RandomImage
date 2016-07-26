@@ -439,7 +439,7 @@ namespace RandomImage
         private void ChangeCurrentPath(string path)
         {
             App.Randomizer.SearchDirectoryPath = path;
-            App.SettingsManager.Settings.AddPlace(path);
+            App.SettingsManager.Settings.AddVisitedPlace(path);
             SelectedPath_lbl.Content = path;
             Search_cbox.Items.Remove(path);
             Search_cbox.Items.Insert(0, path);

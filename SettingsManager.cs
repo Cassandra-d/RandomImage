@@ -76,15 +76,18 @@ namespace RandomImage
 
         public void LoadSettings()
         {
-            if (!IsAppDataFound || !File.Exists(SettingsFileFullPath))
+            if (!IsAppDataFound)
+                return;
+
+            if (!File.Exists(SettingsFileFullPath))
             {
                 try
                 {
-                    SettingsCleanUp();
+                    CreateSettingsDirectoryAndFileIfDoesntExist();
                 }
                 catch (Exception ex)
                 {
-                    CrashLogger.Instance.Log("SettingsCleanUp", ex.Message);
+                    CrashLogger.Instance.Log("CreateSettingsDirectoryAndFileIfDoesntExist", ex.Message);
                     return;
                 }
 
@@ -105,7 +108,8 @@ namespace RandomImage
 
         private void SettingsCleanUp()
         {
-            File.Delete(SettingsFileFullPath);
+            if (File.Exists(SettingsFileFullPath))
+                File.Delete(SettingsFileFullPath);
             CreateSettingsDirectoryAndFileIfDoesntExist();
         }
 
