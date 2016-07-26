@@ -206,9 +206,6 @@ namespace RandomImage
             get { return _searchDirectoryPath; }
             set
             {
-                if (_searchDirectoryPath.Equals(value))
-                    return;
-
                 _searchDirectoryPath = value;
                 _haventSearchedImagesYet = true;
             }
