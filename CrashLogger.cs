@@ -5,26 +5,19 @@ namespace RandomImage
 {
     internal class CrashLogger : IDisposable
     {
-	    private const string _logFileName = "pi_c_random_crash_log.txt";
-	    private string _logFileDirectory;
-        private StreamWriter _sw;
+        private const string _logFileName = "pi_c_random_crash_log.txt";
+        private string _logFileDirectory;
+        private StreamWriter _logsWriter;
         private bool _isInitialized = false;
-	    private const string boundry = "-----------------------";
+        private const string boundry = "-----------------------";
 
-	    static private Lazy<CrashLogger> _instance = new Lazy<CrashLogger>(() => new CrashLogger());
-
+        static private Lazy<CrashLogger> _instance = new Lazy<CrashLogger>(() => new CrashLogger());
         public static CrashLogger Instance
         {
             get
             {
                 return _instance.Value;
             }
-        }
-
-        private CrashLogger()
-        {
-            _logFileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            Init();
         }
 
         private string LogsFullPath
@@ -35,6 +28,12 @@ namespace RandomImage
             }
         }
 
+        private CrashLogger()
+        {
+            _logFileDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Init();
+        }
+
         private void Init()
         {
             try
@@ -42,12 +41,13 @@ namespace RandomImage
                 if (!File.Exists(LogsFullPath))
                 {
                     var file = File.Create(LogsFullPath);
+                    file.Close();
                     file.Dispose();
                 }
 
-                _sw = new StreamWriter(LogsFullPath, true);
-                _sw.WriteLine(string.Concat("Today is ", DateTime.Now.ToShortDateString().ToString(), ", glad to see you again."));
-                _sw.Flush();
+                _logsWriter = new StreamWriter(LogsFullPath, true);
+                _logsWriter.WriteLine(string.Concat("Today is ", DateTime.Now.ToShortDateString().ToString(), ", glad to see you again."));
+                _logsWriter.Flush();
                 _isInitialized = true;
             }
             catch (Exception ex)
@@ -61,14 +61,22 @@ namespace RandomImage
             if (!_isInitialized)
                 return;
 
-            _sw.WriteLine(DateTime.Now.ToString());
-            if (!string.IsNullOrEmpty(msg))
-                _sw.WriteLine(msg);
-            if (!string.IsNullOrEmpty(exception_data))
-                _sw.WriteLine(exception_data);
-            _sw.WriteLine(boundry);
-            _sw.Flush();
+            try
+            {
+                _logsWriter.WriteLine(DateTime.Now.ToString());
+
+                if (!msg.IsNullOrEmpty())
+                    _logsWriter.WriteLine(msg);
+                if (!exception_data.IsNullOrEmpty())
+                    _logsWriter.WriteLine(exception_data);
+
+                _logsWriter.WriteLine(boundry);
+                _logsWriter.Flush();
+            }
+            catch { }
         }
+
+        #region IDisposable
 
         private bool disposedValue = false; // To detect redundant calls
 
@@ -78,20 +86,20 @@ namespace RandomImage
             {
                 if (disposing)
                 {
-                    _sw.Dispose();
+                    _logsWriter.Dispose();
                 }
 
-                _sw = null;
+                _logsWriter = null;
 
                 disposedValue = true;
             }
         }
 
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
         }
+
+        #endregion
     }
 }

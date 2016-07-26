@@ -83,7 +83,7 @@
     <Compile Include="AuxFnc.cs" />
     <Compile Include="CrashLogger.cs" />
     <Compile Include="ImagesList.cs" />
-    <Compile Include="ListExtensions.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="NativeSetClipboardHelper.cs" />
     <Compile Include="RandomImage.cs" />
     <Compile Include="SearchImagesOptions.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsManager.cs" />
     <Compile Include="StaHelper.cs" />
-    <Compile Include="StringsExtensions.cs" />
+    <Compile Include="Extensions\StringsExtensions.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
