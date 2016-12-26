@@ -55,7 +55,7 @@ namespace RandomImage
                 System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
                 return;
             }
-            App.Randomizer.UpdateCollection();
+            App.Randomizer.SearchAndUpdateCollection();
         }
 
         private void AdjustWindowSize()
@@ -72,13 +72,13 @@ namespace RandomImage
         private void ApplySettings()
         {
             SearchInSubdirs_chbox.IsChecked = App.SettingsManager.Settings.SearchInSubdirectories;
-            App.Randomizer.IncludeSubdirs = App.SettingsManager.Settings.SearchInSubdirectories;
+            App.Randomizer.IsIncludeSubdirs = App.SettingsManager.Settings.SearchInSubdirectories;
             AutomaticalyCopyToClipboard_chbox.IsChecked = App.SettingsManager.Settings.AutomaticalyCopyImageToClipboard;
             CheckForAlreadyUsed_chbox.IsChecked = App.SettingsManager.Settings.CheckForAlreadyUsedImages;
 
             if (App.SettingsManager.Settings.LastPlaces.Any())
             {
-                App.Randomizer.SearchDirectoryPath = App.SettingsManager.Settings.LastPlaces.ElementAt(0);
+                App.Randomizer.CurrentSearchDirectoryPath = App.SettingsManager.Settings.LastPlaces.ElementAt(0);
                 SelectedPath_lbl.Content = App.SettingsManager.Settings.LastPlaces.ElementAt(0);
             }
 
@@ -103,7 +103,7 @@ namespace RandomImage
         {
             get
             {
-                return System.IO.Directory.Exists(App.Randomizer.SearchDirectoryPath);
+                return System.IO.Directory.Exists(App.Randomizer.CurrentSearchDirectoryPath);
             }
         }
 
@@ -116,7 +116,7 @@ namespace RandomImage
         {
             using (var dialog = new FolderBrowserDialog())
             {
-                dialog.SelectedPath = App.Randomizer.SearchDirectoryPath ?? "";
+                dialog.SelectedPath = App.Randomizer.CurrentSearchDirectoryPath ?? "";
                 DialogResult result = dialog.ShowDialog();
                 if (result.ToString().ToLower().Equals("ok"))
                 {
@@ -140,7 +140,7 @@ namespace RandomImage
                     System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
                     return;
                 }
-                App.Randomizer.UpdateCollection();
+                App.Randomizer.SearchAndUpdateCollection();
                 return;
             }
 
@@ -166,7 +166,7 @@ namespace RandomImage
                     System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
                     return;
                 }
-                App.Randomizer.UpdateCollection();
+                App.Randomizer.SearchAndUpdateCollection();
                 return;
             }
 
@@ -179,13 +179,13 @@ namespace RandomImage
 
         private void Add_btn_Click(object sender, RoutedEventArgs e)
         {
-            var str = App.Randomizer.Count == 0 ?
+            var str = App.Randomizer.ImagesCount == 0 ?
                 StringMessages.DID_NOT_FOUND_IMAGE : App.Randomizer.CurrentImage;
 
             PostToLogBox(str);
             PostToClipboard(str);
 
-            if (App.Randomizer.Count == 0)
+            if (App.Randomizer.ImagesCount == 0)
                 return;
             MarkAsUsed(str);
             DisplayUsedImageLabel(str);
@@ -235,13 +235,13 @@ namespace RandomImage
                 System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
                 return;
             }
-            App.Randomizer.UpdateCollection();
+            App.Randomizer.SearchAndUpdateCollection();
         }
 
         private void SearchInSubdirs_chbox_Click(object sender, RoutedEventArgs e)
         {
             var val = (sender as System.Windows.Controls.CheckBox).IsChecked.Value;
-            App.Randomizer.IncludeSubdirs = val;
+            App.Randomizer.IsIncludeSubdirs = val;
             App.SettingsManager.Settings.SearchInSubdirectories = val;
             HideImageAndInfo();
 
@@ -250,12 +250,12 @@ namespace RandomImage
                 System.Windows.MessageBox.Show(StringMessages.SELECTED_DIRECTORY_DOES_NOT_EXIST);
                 return;
             }
-            App.Randomizer.UpdateCollection();
+            App.Randomizer.SearchAndUpdateCollection();
         }
 
         private void Stop_btn_Click(object sender, RoutedEventArgs e)
         {
-            App.Randomizer.AbortSeaerch();
+            App.Randomizer.StopSeaerch();
         }
 
         private void DisplayImage(string imagePath)
@@ -309,7 +309,7 @@ namespace RandomImage
                 return;
             }
 
-            FoundImagesCount_lbl.Content = App.Randomizer.Count;
+            FoundImagesCount_lbl.Content = App.Randomizer.ImagesCount;
         }
 
         private void DisplayModificationDate(string filePath)
@@ -448,7 +448,7 @@ namespace RandomImage
 
         private void ChangeCurrentPath(string path)
         {
-            App.Randomizer.SearchDirectoryPath = path;
+            App.Randomizer.CurrentSearchDirectoryPath = path;
             App.SettingsManager.Settings.AddVisitedPlace(path);
             SelectedPath_lbl.Content = path;
             Search_cbox.Items.Remove(path);
@@ -510,7 +510,7 @@ namespace RandomImage
                 return;
             }
 
-            if (!IsSearchPathSet || App.Randomizer.Count == 0)
+            if (!IsSearchPathSet || App.Randomizer.ImagesCount == 0)
                 return;
 
             var file = App.Randomizer.CurrentImage;

@@ -18,7 +18,7 @@ namespace RandomImage
             DispatcherUnhandledException += ApplicationScopeExceptionHandler;
 
             SettingsManager.LoadSettings();
-            Randomizer.SearchDirectoryPath = SettingsManager.Settings.CurrentPlace;
+            Randomizer.CurrentSearchDirectoryPath = SettingsManager.Settings.CurrentPlace;
         }
         ~App()
         {

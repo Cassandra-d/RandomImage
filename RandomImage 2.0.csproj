@@ -82,6 +82,7 @@
     </ApplicationDefinition>
     <Compile Include="AuxFnc.cs" />
     <Compile Include="CrashLogger.cs" />
+    <Compile Include="DirectoryDoesNotExistAnymore.cs" />
     <Compile Include="ImagesList.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="NativeSetClipboardHelper.cs" />
